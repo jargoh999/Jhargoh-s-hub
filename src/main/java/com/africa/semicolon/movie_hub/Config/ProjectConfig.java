@@ -20,6 +20,7 @@ public class ProjectConfig {
         return new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", System.getenv("API_CLOUDINARY__CLOUDNAME"),
                 "api_key", System.getenv("API_CLOUDINARY_KEY"),
-                "api_secret", System.getenv("API_CLOUDINARY_SECRET_KEY")));
+                "api_secret", System.getenv("API_CLOUDINARY_SECRET_KEY"),
+                "resource_type","auto"));
     }
 }

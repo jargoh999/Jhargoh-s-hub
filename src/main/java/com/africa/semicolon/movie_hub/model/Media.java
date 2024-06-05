@@ -1,9 +1,9 @@
 package com.africa.semicolon.movie_hub.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -16,4 +16,24 @@ public class Media {
     private Long id;
     private String url;
     private String description;
+    @Enumerated(EnumType.STRING)
+    private Category category;
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime timeCreated;
+    @Setter(AccessLevel.NONE)
+    private LocalDateTime timeUpdated;
+    @ManyToOne
+    private User user;
+
+    @PrePersist
+    private void setTimeCreated(){
+        this.timeCreated = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void setTimeUpdated() {
+        this.timeCreated = LocalDateTime.now();
+    }
 }
+
+
