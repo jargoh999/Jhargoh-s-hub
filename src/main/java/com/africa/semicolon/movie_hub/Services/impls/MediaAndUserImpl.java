@@ -15,6 +15,10 @@ import com.africa.semicolon.movie_hub.utils.MediaUtils;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.EagerTransformation;
 import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -92,8 +96,14 @@ public class MediaAndUserImpl implements MediaServices {
         return mediaRepo.findMediaByCategory(category);}
 
     @Override
-    public MediaResponse updateMedia(Long mediaId, MediaRequest mediaRequest) {
-
+    public MediaResponse updateMedia(Long mediaId, JsonPatch updateMediaRequest) throws JsonPatchException {
+        Media media = getMediaById(mediaId);
+        ObjectMapper objectMapper = new ObjectMapper();
+       var mediaNode = objectMapper.convertValue(media, JsonNode.class);
+       mediaNode=updateMediaRequest.apply(mediaNode);
+       media=objectMapper.convertValue(mediaNode, Media.class);
+       media=mediaRepo.save(media);
+       return new ModelMapper().map(media,MediaResponse.class);
     }
 
 

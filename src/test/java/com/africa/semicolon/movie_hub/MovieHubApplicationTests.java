@@ -4,20 +4,34 @@ import com.africa.semicolon.movie_hub.Repository.MediaRepo;
 import com.africa.semicolon.movie_hub.Services.impls.MediaAndUserImpl;
 import com.africa.semicolon.movie_hub.dto.MediaRequest;
 import com.africa.semicolon.movie_hub.dto.MediaResponse;
+import com.africa.semicolon.movie_hub.model.Category;
 import com.africa.semicolon.movie_hub.model.Media;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.github.fge.jackson.jsonpointer.JsonPointer;
+import com.github.fge.jackson.jsonpointer.JsonPointerException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.JsonPatchOperation;
+import com.github.fge.jsonpatch.ReplaceOperation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.web.multipart.MultipartFile;
+import org.xmlunit.builder.Input;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+
 import static com.africa.semicolon.movie_hub.model.Category.ACTION;
-import static com.africa.semicolon.movie_hub.utils.TestUtils.TEST_IMAGE_PATH;
-import static com.africa.semicolon.movie_hub.utils.TestUtils.TEST_VIDEO_PATH;
+import static com.africa.semicolon.movie_hub.model.Category.MOVIE;
+import static com.africa.semicolon.movie_hub.utils.TestUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -64,17 +78,14 @@ class MovieHubApplicationTests {
 		mappedMedia = new Media();
 		Path path1 = Paths.get( TEST_VIDEO_PATH );
 		var streamOfData = Files.newInputStream(path1);
-		MultipartFile file = new MockMultipartFile("screenShot",streamOfData);
-		mediaRequest.setFile(file);
-		mediaRequest.setUserId(200L);
-		mediaRequest.setDescription("just a video");
-		mediaRequest.setCategory(ACTION);
-		mediaResponse = mediaAndUserImpl.uploadVideo(mediaRequest);
+        var mediaRequest = buildUpMediaRequest(streamOfData);
+		mediaResponse=mediaAndUserImpl.uploadVideo(mediaRequest);
 		assertEquals(mediaRequest.getDescription(), mediaResponse.getDescription());
 		assertNotNull(mediaResponse.getUrl());
 		assertNotNull(mediaResponse.getUser());
 		assertSame(mediaResponse.getCategory(),ACTION);
 	}
+
 
 
 	@Test
@@ -91,7 +102,20 @@ class MovieHubApplicationTests {
 		var media = mediaRepo.findMediaByCategory(ACTION);
 		assertTrue(media.size()>2);
 	}
-
+	@Test
+	@Sql(scripts = {"/db/data.sql"})
+	public void updateMediaTest() throws JsonPointerException, JsonPatchException {
+		Category category = mediaAndUserImpl.getMediaById(103L).getCategory();
+		assertThat(category).isNotEqualTo(MOVIE);
+		List<JsonPatchOperation> operations = List.of(
+				new ReplaceOperation(new JsonPointer("/category"),
+				  new TextNode(ACTION.name())));
+          JsonPatch updateMediaRequest = new JsonPatch(operations);
+		  MediaResponse response = mediaAndUserImpl.updateMedia(103L,updateMediaRequest);
+		  assertThat(response).isNotNull();
+		  category=mediaAndUserImpl.getMediaById(103L).getCategory();
+		  assertThat(category).isEqualTo(ACTION);
+	}
 
 
 

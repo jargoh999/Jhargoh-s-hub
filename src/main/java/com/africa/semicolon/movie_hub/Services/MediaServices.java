@@ -4,6 +4,8 @@ import com.africa.semicolon.movie_hub.dto.MediaRequest;
 import com.africa.semicolon.movie_hub.dto.MediaResponse;
 import com.africa.semicolon.movie_hub.model.Category;
 import com.africa.semicolon.movie_hub.model.Media;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 
 import java.util.List;
 
@@ -15,6 +17,6 @@ public interface MediaServices {
 
     List<Media> getUserByCategoryId(Category category);
 
-    MediaResponse updateMedia (Long mediaId, MediaRequest mediaRequest);
+    MediaResponse updateMedia (Long mediaId, JsonPatch updateMediaRequest) throws JsonPatchException;
 
 }
