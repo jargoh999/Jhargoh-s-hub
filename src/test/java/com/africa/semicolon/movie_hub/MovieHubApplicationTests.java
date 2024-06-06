@@ -82,7 +82,7 @@ class MovieHubApplicationTests {
 		mediaResponse=mediaAndUserImpl.uploadVideo(mediaRequest);
 		assertEquals(mediaRequest.getDescription(), mediaResponse.getDescription());
 		assertNotNull(mediaResponse.getUrl());
-		assertNotNull(mediaResponse.getUser());
+		assertNotNull(mediaResponse.getUploader());
 		assertSame(mediaResponse.getCategory(),ACTION);
 	}
 
@@ -116,9 +116,5 @@ class MovieHubApplicationTests {
 		  category=mediaAndUserImpl.getMediaById(103L).getCategory();
 		  assertThat(category).isEqualTo(ACTION);
 	}
-
-
-
-
 
 }

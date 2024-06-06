@@ -32,7 +32,7 @@ public class Media {
 
     private LocalDateTime timeUpdated;
     @ManyToOne
-    private User user;
+    private User uploader;
 
     @PrePersist
     private void setTimeCreated(){

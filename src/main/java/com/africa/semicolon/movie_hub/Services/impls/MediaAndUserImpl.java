@@ -11,9 +11,7 @@ import com.africa.semicolon.movie_hub.model.Media;
 
 
 import com.africa.semicolon.movie_hub.model.User;
-import com.africa.semicolon.movie_hub.utils.MediaUtils;
 import com.cloudinary.Cloudinary;
-import com.cloudinary.EagerTransformation;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +20,6 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -54,7 +51,7 @@ public class MediaAndUserImpl implements MediaServices {
             String url = response.get("url").toString();
             Media media=mapper.map(uploadRequest,Media.class);
             media.setUrl(url);
-            media.setUser(user);
+            media.setUploader(user);
             media = mediaRepo.save(media);
             return mapper.map(media, MediaResponse.class);
         } catch (IOException exception) {
@@ -76,7 +73,7 @@ public class MediaAndUserImpl implements MediaServices {
             String url = response.get("url").toString();
             Media media = mapper.map(uploadRequest, Media.class);
             media.setUrl(url);
-            media.setUser(user);
+            media.setUploader(user);
             media = mediaRepo.save(media);
             return mapper.map(media, MediaResponse.class);
         } catch (IOException exception) {
@@ -104,6 +101,14 @@ public class MediaAndUserImpl implements MediaServices {
        media=objectMapper.convertValue(mediaNode, Media.class);
        media=mediaRepo.save(media);
        return new ModelMapper().map(media,MediaResponse.class);
+    }
+
+    @Override
+    public List<MediaResponse> getMediaForUser(Long userId) {
+        List<Media>  medias = mediaRepo.findAllMediaFor(userId);
+        return medias.stream().map
+                (media -> mapper.map(media,
+                        MediaResponse.class )).toList();
     }
 
 

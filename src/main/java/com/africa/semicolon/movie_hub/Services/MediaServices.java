@@ -19,4 +19,6 @@ public interface MediaServices {
 
     MediaResponse updateMedia (Long mediaId, JsonPatch updateMediaRequest) throws JsonPatchException;
 
+    List<MediaResponse> getMediaForUser(Long userId);
+
 }

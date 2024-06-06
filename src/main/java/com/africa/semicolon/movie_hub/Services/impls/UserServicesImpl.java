@@ -21,9 +21,6 @@ public class UserServicesImpl implements UserServices {
              users.save(user);
              return mapper.map(user, UserResponse.class);
     }
-
-
-
     @Override
     public User findUserBy(Long id) {
         return users.findByUserId(id).orElseThrow(()->

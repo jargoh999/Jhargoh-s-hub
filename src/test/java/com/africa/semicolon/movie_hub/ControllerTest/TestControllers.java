@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,27 +22,26 @@ import java.nio.file.Path;
 
 import static com.africa.semicolon.movie_hub.utils.TestUtils.TEST_VIDEO_PATH;
 import static com.africa.semicolon.movie_hub.utils.TestUtils.buildUpMediaRequest;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql(scripts = {"/db/data.sql"})
+
 public class TestControllers {
 
    @Autowired
    private MockMvc mockMvc;
     @Test
-    @Sql(scripts = {"/db/data.sql"})
     public void testMediaController(){
-
-        ObjectMapper mapper = new ObjectMapper();
         try(InputStream inputStream = Files.newInputStream(Path.of(TEST_VIDEO_PATH)  )){
-            MultipartFile file = new MockMultipartFile("test media file ",inputStream);
+            MultipartFile file = new MockMultipartFile("file",inputStream);
             mockMvc.perform(multipart("/api/v1/media")
                             .file(file.getName(),file.getBytes())
-                            .part(new MockPart("mediaId", "200".getBytes()))
+                            .part(new MockPart("userId", "200".getBytes()))
                             .part( new MockPart("description", "test description".getBytes()))
                             .part(new MockPart("category", "ACTION".getBytes()))
                             .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -51,6 +51,21 @@ public class TestControllers {
             throw new RuntimeException(e);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+
+
+    @Test
+    public void testGetMediaForUser(){
+        try{
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/media?userId=200")
+                            .contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(status().is2xxSuccessful())
+                            .andDo(print());
+
+        } catch (Exception e) {
+            assertThat(e).isNull();
         }
     }
 }
