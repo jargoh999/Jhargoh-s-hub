@@ -39,7 +39,7 @@ dependencies {
 	implementation 'org.springframework:spring-test:6.1.6'
 	implementation 'com.cloudinary:cloudinary-http44:1.38.0'
 	implementation 'com.github.java-json-tools:json-patch:1.13'
-
+	implementation 'org.springframework.boot:spring-boot-starter-security:3.3.0'
 }
 
 tasks.named('test') {

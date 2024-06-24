@@ -18,7 +18,7 @@ public static final String TEST_VIDEO_PATH = "C:\\Users\\DELL\\Downloads\\vid.mp
     public static MediaRequest buildUpMediaRequest(InputStream inputStream) throws IOException {
         MultipartFile file = new MockMultipartFile("screenShot",inputStream);
         MediaRequest mediaRequest = new MediaRequest();
-          mediaRequest.setFile(file);
+        mediaRequest.setFile(file);
         mediaRequest.setUserId(200L);
         mediaRequest.setDescription("just a video");
         mediaRequest.setCategory(ACTION);

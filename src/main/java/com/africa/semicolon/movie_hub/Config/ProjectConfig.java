@@ -6,6 +6,7 @@ import com.cloudinary.utils.ObjectUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class ProjectConfig {
@@ -22,5 +23,10 @@ public class ProjectConfig {
                 "api_key", System.getenv("API_CLOUDINARY_KEY"),
                 "api_secret", System.getenv("API_CLOUDINARY_SECRET_KEY"),
                 "resource_type","auto"));
+    }
+
+    @Bean
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
     }
 }
