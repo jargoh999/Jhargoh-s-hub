@@ -1,8 +1,6 @@
 package com.africa.semicolon.movie_hub.Services.impls;
 
-import aj.org.objectweb.asm.commons.AnnotationRemapper;
 import com.africa.semicolon.movie_hub.Repository.MediaRepo;
-import com.africa.semicolon.movie_hub.Repository.Users;
 import com.africa.semicolon.movie_hub.Services.MediaServices;
 import com.africa.semicolon.movie_hub.dto.MediaRequest;
 import com.africa.semicolon.movie_hub.dto.MediaResponse;
@@ -25,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
