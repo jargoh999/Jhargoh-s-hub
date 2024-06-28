@@ -26,7 +26,7 @@ public class MediaController {
                   .body(mediaAndUser.uploadVideo(mediaRequest));
     }
 
-    @GetMapping
+    @GetMapping("/view-user-media")
     public ResponseEntity<List<MediaResponse>> getMediaForUser(@RequestParam Long userId){
           return ResponseEntity.ok(mediaAndUser.getMediaForUser(userId));
     }

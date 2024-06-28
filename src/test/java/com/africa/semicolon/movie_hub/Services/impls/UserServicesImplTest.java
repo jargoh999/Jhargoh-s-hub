@@ -16,7 +16,7 @@ class UserServicesImplTest {
     @Test
                                                                                                                                                                                                                                                                                                                                                                                     @Sql(scripts = {"/db/data.sql"})
     public void testFindUserById(){
-        User user = userServices.findUserBy(200L);
+        User user = userServices.getUserBy(200L);
         assertThat(user).isNotNull();
     }
 

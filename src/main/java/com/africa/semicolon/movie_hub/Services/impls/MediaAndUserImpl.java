@@ -37,12 +37,12 @@ public class MediaAndUserImpl implements MediaServices {
     private final ModelMapper mapper;
 
     private Cloudinary cloudinary;
-    private Users users;
+    private UserServicesImpl users;
 
 
     @Override
     public MediaResponse uploadMedia(MediaRequest uploadRequest) {
-            User user =users.findByUserId(uploadRequest.getUserId()).get();
+            User user =users.getUserBy(uploadRequest.getUserId());
         try {
             Map<?,?> response = cloudinary.uploader().upload(uploadRequest.getFile().getBytes(), new HashMap());
             String url = response.get("url").toString();
@@ -63,7 +63,7 @@ public class MediaAndUserImpl implements MediaServices {
 
 
     public MediaResponse uploadVideo(MediaRequest uploadRequest) {
-        User user =users.findByUserId(uploadRequest.getUserId()).get();
+        User user =users.getUserBy(uploadRequest.getUserId());
         try {
            Map<?,?> response = cloudinary.uploader().upload(uploadRequest.getFile().getBytes(),ObjectUtils.asMap(
            "resource_type","auto"));

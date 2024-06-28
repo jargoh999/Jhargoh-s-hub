@@ -7,6 +7,7 @@ import com.africa.semicolon.movie_hub.dto.UserResponse;
 import com.africa.semicolon.movie_hub.model.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,11 +15,13 @@ import org.springframework.stereotype.Service;
 public class UserServicesImpl implements UserServices {
     private final ModelMapper mapper;
     private final UserRepository users;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
     public UserResponse addUser(UserRequest request) {
         User user =mapper.map(request, User.class);
+        user.setUserPassword(passwordEncoder.encode(request.getUserPassword()));
         users.save(user);
         return mapper.map(user, UserResponse.class);
     }
