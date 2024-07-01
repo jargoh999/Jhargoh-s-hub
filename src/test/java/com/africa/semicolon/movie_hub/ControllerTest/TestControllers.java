@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -36,6 +37,7 @@ public class TestControllers {
    @Autowired
    private MockMvc mockMvc;
     @Test
+    @WithMockUser(authorities = {"USER"})
     public void testMediaController(){
         try(InputStream inputStream = Files.newInputStream(Path.of(TEST_VIDEO_PATH)  )){
             MultipartFile file = new MockMultipartFile("file",inputStream);
@@ -50,7 +52,7 @@ public class TestControllers {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
