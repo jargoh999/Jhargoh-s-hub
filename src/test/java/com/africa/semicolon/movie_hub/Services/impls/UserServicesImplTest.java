@@ -1,5 +1,6 @@
 package com.africa.semicolon.movie_hub.Services.impls;
 
+import com.africa.semicolon.movie_hub.dto.UserRequest;
 import com.africa.semicolon.movie_hub.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,4 +22,13 @@ class UserServicesImplTest {
     }
 
 
+    @Test
+
+    public void testRegisterUser() {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail("user@Test.com");
+        userRequest.setUserPassword("1234");
+        var response = userServices.addUser(userRequest);
+        assertThat(response.getUserPassword()).isNotEqualTo(userRequest.getUserPassword());
+    }
 }

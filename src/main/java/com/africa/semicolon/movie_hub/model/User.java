@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -29,6 +30,8 @@ public class User {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime timeUpdated;
+    @ElementCollection
+    private Set<Authority> authorities;
     @PrePersist
     public void setTimeCreated() {
         this.timeCreated = LocalDateTime.now();
