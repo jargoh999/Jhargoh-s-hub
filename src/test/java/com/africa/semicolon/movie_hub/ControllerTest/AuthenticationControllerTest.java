@@ -1,6 +1,7 @@
 package com.africa.semicolon.movie_hub.ControllerTest;
 
 import com.africa.semicolon.movie_hub.dto.LoginRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
+ import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,4 +36,20 @@ public class AuthenticationControllerTest {
                 .content(objectMapper.writeValueAsBytes(request)))
                .andDo(print()).andExpect(status().isOk());
     }
+
+    @Test
+    public void testThatInvalidAuthenticationThrowsException() throws Exception {
+
+        LoginRequest request = new LoginRequest();
+        request.setPassword("20171");
+        request.setUsername("jargoh0000@gmail,com");
+        ObjectMapper objectMapper = new ObjectMapper();
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(request)))
+                .andDo(print()).andExpect(status().isUnauthorized());
+
+
+    }
+
 }

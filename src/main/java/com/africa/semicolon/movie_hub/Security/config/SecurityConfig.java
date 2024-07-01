@@ -13,18 +13,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.POST;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationManager authenticationManager;
     @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        var   authFilter = new CustomUsernamePasswordAuthenticationFilter(authenticationManager) ;
+        var  authFilter = new CustomUsernamePasswordAuthenticationFilter(authenticationManager) ;
         authFilter.setFilterProcessesUrl("/api/v1/auth");
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                        .cors(AbstractHttpConfigurer::disable)
                        .addFilterAt(authFilter, BasicAuthenticationFilter.class)
-                       .authorizeHttpRequests(c->c.anyRequest().permitAll())
+                       .authorizeHttpRequests(
+                               requestEndPoint->
+                                       requestEndPoint.requestMatchers("/api/v1/auth").permitAll()
+                       )
+                       .authorizeHttpRequests(
+                               requestEndpoint ->
+                                       requestEndpoint.requestMatchers("/api/v1/media").hasAnyAuthority("USER")
+                       )
                        .build();
     }
 }
