@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
@@ -26,9 +27,14 @@ public class MediaController {
                   .body(mediaAndUser.uploadVideo(mediaRequest));
     }
 
-    @GetMapping("/view-user-media")
-    public ResponseEntity<List<MediaResponse>> getMediaForUser(@RequestParam Long userId){
-          return ResponseEntity.ok(mediaAndUser.getMediaForUser(userId));
+   @GetMapping
+    public ResponseEntity<?> getMediaForUser(@RequestParam Long userId){
+        try {
+            return ResponseEntity.ok(mediaAndUser.getMediaForUser(userId));
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
+        }
+
     }
 
 

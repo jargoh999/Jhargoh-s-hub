@@ -36,6 +36,8 @@ public class MediaAndUserImpl implements MediaServices {
 
     private final ModelMapper mapper;
 
+    private final UserServicesImpl userServices;
+
     private Cloudinary cloudinary;
     private UserServicesImpl users;
 
@@ -102,6 +104,9 @@ public class MediaAndUserImpl implements MediaServices {
 
     @Override
     public List<MediaResponse> getMediaForUser(Long userId) {
+        if(userServices.getUserBy(userId)==null)throw new RuntimeException(
+                "user not found"
+        );
         List<Media>  medias = mediaRepo.findAllMediaFor(userId);
         return medias.stream().map
                 (media -> mapper.map(media,

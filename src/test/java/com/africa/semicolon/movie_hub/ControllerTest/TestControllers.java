@@ -31,13 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Sql(scripts = {"/db/data.sql"})
-
+@WithMockUser(authorities = {"USER"})
 public class TestControllers {
 
    @Autowired
    private MockMvc mockMvc;
     @Test
-    @WithMockUser(authorities = {"USER"})
+
     public void testMediaController(){
         try(InputStream inputStream = Files.newInputStream(Path.of(TEST_VIDEO_PATH)  )){
             MultipartFile file = new MockMultipartFile("file",inputStream);
@@ -69,5 +69,19 @@ public class TestControllers {
         } catch (Exception e) {
             assertThat(e).isNull();
         }
+    }
+
+    @Test
+    public void testGetMediaForInvalidUserIdAndExpectItToFail(){
+        try{
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/media?userId=20000")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest())
+                    .andDo(print());
+
+        } catch (Exception e) {
+            assertThat(e).isNull();
+        }
+
     }
 }
